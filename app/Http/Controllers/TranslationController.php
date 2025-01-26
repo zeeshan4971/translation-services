@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Translation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class TranslationController extends Controller
 {
@@ -94,5 +96,35 @@ class TranslationController extends Controller
         $translation->delete();
 
         return response()->json(['message' => 'Translation deleted successfully'], 200);
+    }
+
+    public function jsonExport()
+    {
+        // Retrieve the data from the cache
+        $translations = Cache::remember('translations_export', 60, function () {
+            // Return the translations as an array for caching
+            return DB::table('translations')->orderBy('id')->get()->toArray();
+        });
+
+        // Stream the cached data
+        return response()->stream(function () use ($translations) {
+            echo "[";
+
+            $first = true;
+            foreach ($translations as $translation) {
+                if (!$first) {
+                    echo ",";
+                }
+
+                echo json_encode($translation);
+                $first = false;
+            }
+
+            echo "]";
+        }, 200, [
+            "Content-Type" => "application/json",
+            "Cache-Control" => "no-cache",
+            "Connection" => "keep-alive",
+        ]);
     }
 }
