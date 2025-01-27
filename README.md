@@ -11,9 +11,10 @@ Json endpoint should always return updated translations whenever requested.
 1) Install 
 	Composer update
 	php artisan migrate
-	php artisan db:seed
+	php artisan db:seed --> To Generate API User and Few Locals
+    php artisan db:seed TranslationSeeder --> To Generate bulk 100k translations
 	
-2) Import Postman Api Doc
+3) Import Postman Api Doc
 
 		Postman 
 		/Login {{Token}}
@@ -28,7 +29,7 @@ Json endpoint should always return updated translations whenever requested.
 		
 		
 		
-3) Follow PSR-12 standards and use a scalable database schema.		
+4) Follow PSR-12 standards and use a scalable database schema.		
 
 	A) Declare namespace first, followed by use statements, grouped and alphabetized.
 	B) Use strict_types and class naming conventions.
